@@ -121,6 +121,7 @@ export function registerRoutes(app: Express): Server {
             google_search: {},
           },
         ],
+        systemInstruction: 'Respond in Chinese',
       });
 
       // Generate content with search tool
