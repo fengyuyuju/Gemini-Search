@@ -1,4 +1,5 @@
-import { useState, KeyboardEvent } from 'react';
+// filepath: /Users/bing/Workspace/Gemini-Search/client/src/components/SearchInput.tsx
+import { useState, KeyboardEvent, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Search, Loader2 } from 'lucide-react';
@@ -20,6 +21,11 @@ export function SearchInput({
   large = false,
 }: SearchInputProps) {
   const [query, setQuery] = useState(initialValue);
+  const [isComposing, setIsComposing] = useState(false);
+
+  useEffect(() => {
+    setQuery(initialValue);
+  }, [initialValue]);
 
   const handleSubmit = () => {
     if (query.trim() && !isLoading) {
@@ -28,7 +34,11 @@ export function SearchInput({
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && isComposing) {
+      e.preventDefault();
+      return;
+    }
+    if (e.key === 'Enter' && !isComposing) {
       handleSubmit();
     }
   };
@@ -45,6 +55,8 @@ export function SearchInput({
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={handleKeyDown}
+          onCompositionStart={() => setIsComposing(true)}
+          onCompositionEnd={() => setIsComposing(false)}
           placeholder="Ask anything..."
           className={cn(
             "pl-10 pr-4 transition-all duration-200",
